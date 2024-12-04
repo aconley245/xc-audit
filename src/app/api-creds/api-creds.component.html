@@ -1,0 +1,13 @@
+<form>
+    <div class="row">
+      <div class="col">
+        <label for="tenant">Distributed Cloud Tenant</label>
+        <input [(ngModel)]="tenant" type="text" class="form-control" placeholder="Tenant" id="tenant" name="tenant">
+      </div>
+      <div class="col">
+        <label for="apiToken">Distributed Cloud API Token</label>
+        <input [(ngModel)]="apiToken" type="password" class="form-control" placeholder="API Token" id="apiToken" name="apiToken">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+  </form>

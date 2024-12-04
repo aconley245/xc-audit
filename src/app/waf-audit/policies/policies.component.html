@@ -1,0 +1,29 @@
+<div class="row">
+    <app-waf-audit />
+    <div class="col">
+        <label for="selectNamespace" #mynamespace>Select Namespace</label>
+        <select id="selectNamespace" class="form-control" (change)="getWAFByNamespace()" [(ngModel)]="namespace">
+            <option value="">Select</option>
+            <option *ngFor="let item of namespaceData" [value]="item.name">
+                {{ item.name }}
+            </option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>WAF Policy</th>
+            <th>Namespace</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (waf of wafData; track waf.name) {
+            <tr>
+                <td>{{waf.name}}</td>
+                <td>{{waf.namespace.name}}</td>
+            </tr>
+        }
+    </tbody>
+</table>

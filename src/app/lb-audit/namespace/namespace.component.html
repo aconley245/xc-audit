@@ -1,0 +1,29 @@
+<div class="row">
+    <app-lb-audit />
+    <div class="col">
+        <label for="selectNamespace" #mynamespace>Select Namespace</label>
+        <select id="selectNamespace" class="form-control" (change)="getLoadbalancers()" [(ngModel)]="namespace">
+            <option value="">Select</option>
+            <option *ngFor="let item of namespaceData" [value]="item.name">
+                {{ item.name }}
+            </option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Load Balancer</th>
+            <th>Namespace</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (lb of lbData; track lb.name) {
+            <tr>
+                <td>{{lb.name}}</td>
+                <td>{{lb.namespace.name}}</td>
+            </tr>
+        }
+    </tbody>
+</table>

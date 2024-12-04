@@ -1,0 +1,45 @@
+<div class="row">
+    <app-waf-audit />
+    <div class="col">
+        <label for="selectNamespace" #mynamespace>Select Namespace</label>
+        <select id="selectNamespace" class="form-control" (change)="getWAFByNamespace()" [(ngModel)]="namespace">
+            <option value="">Select</option>
+            <option *ngFor="let item of namespaceData" [value]="item.name">
+                {{ item.name }}
+            </option>
+        </select>
+        <label for="selectWafPolicy">Select WAF Policy</label>
+      <select class="form-control" id="selectWafPolicy" (change)="getLoadbalancers()" [(ngModel)]="wafPolicy">
+        <option value="">Select </option>
+        <option *ngFor="let item of wafData" [value]="item.name">{{item.name}}</option>
+      </select>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Load Balancer</th>
+            <th>WAF Policy</th>
+            <th>Policy Matches</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (loadbalancer of lbData; track loadbalancer.name) {
+            @if (loadbalancer.app_firewall.name === wafPolicy) {
+                <tr class="table-success">
+                    <td>{{loadbalancer.name}}</td>
+                    <td>{{loadbalancer.app_firewall.name}}</td>
+                    <td>Compliant</td>
+                </tr>
+            }
+            @else {
+                <tr class="table-warning">
+                    <td>{{loadbalancer.name}}</td>
+                    <td>{{loadbalancer.app_firewall.name}}</td>
+                    <td>Not Compliant</td>
+                </tr>
+            }     
+        }
+    </tbody>
+</table>
