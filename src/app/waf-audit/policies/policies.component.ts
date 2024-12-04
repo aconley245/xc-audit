@@ -25,7 +25,7 @@ export class PoliciesComponent {
 
 
   fetchData() {
-    this.httpClient.get('http://localhost:8000/api/namespaces') // Replace with your API endpoint
+    this.httpClient.get('http://10.1.1.5:8000/api/namespaces') // Replace with your API endpoint
       .subscribe((response: any) => {
         this.namespaceData = response; // Assuming the API returns an array of objects
       });
@@ -33,7 +33,7 @@ export class PoliciesComponent {
     }
 
     getWAFByNamespace() {
-      this.httpClient.get('http://localhost:8000/api/namespace_waf_policies/'+this.namespace) // Replace with your API endpoint
+      this.httpClient.get('http://10.1.1.5:8000/api/namespace_waf_policies/'+this.namespace) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.wafData = response; // Assuming the API returns an array of objects
       });
