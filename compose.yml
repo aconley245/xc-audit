@@ -1,0 +1,10 @@
+---
+version: "3"
+services:
+  xc-audit:
+    build:
+      context: . 
+    container_name: xc-audit
+    ports:
+      - 8080:8080
+    restart: unless-stopped
