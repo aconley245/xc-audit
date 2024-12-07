@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { ContentComponent } from './components/content/content.component';
 
@@ -9,10 +9,22 @@ import { ContentComponent } from './components/content/content.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'xc-audit';
 
-  openwafaudit() {
+  constructor(private router: Router) {}
 
+  checkToken() {
+    const apiToken = localStorage.getItem('apiToken');
+    const tenant = localStorage.getItem('tenant');
+
+    if (!apiToken && !tenant) {
+      console.log('Routing to api-creds');
+      this.router.navigate([ '/api-creds' ]);
+    }
+  }
+
+  ngOnInit(): void {
+    this.checkToken();
   }
 }
