@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { WafAuditComponent } from '../waf-audit.component';
 import { CommonModule } from '@angular/common';
@@ -16,6 +17,9 @@ export class PoliciesComponent {
   wafData: any[] = [];
   wafPolicy: string = '';
 
+  private backendServer = environment.backendServer;
+  private backendServerPort = environment.backendServerPort;
+
  
   httpClient = inject(HttpClient);
 
@@ -25,7 +29,7 @@ export class PoliciesComponent {
 
 
   fetchData() {
-    this.httpClient.get('http://10.1.1.4:8000/api/namespaces') // Replace with your API endpoint
+    this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespaces`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.namespaceData = response; // Assuming the API returns an array of objects
       });
@@ -33,7 +37,7 @@ export class PoliciesComponent {
     }
 
     getWAFByNamespace() {
-      this.httpClient.get('http://10.1.1.4:8000/api/namespace_waf_policies/'+this.namespace) // Replace with your API endpoint
+      this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespace_waf_policies/${this.namespace}`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.wafData = response; // Assuming the API returns an array of objects
       });

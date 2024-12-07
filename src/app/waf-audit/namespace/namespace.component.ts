@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { WafAuditComponent } from '../waf-audit.component';
@@ -17,6 +18,9 @@ export class NamespaceComponent implements OnInit {
   wafPolicy: string = '';
   lbData: any[] =[];
  
+  private backendServer = environment.backendServer;
+  private backendServerPort = environment.backendServerPort;
+
   httpClient = inject(HttpClient);
 
   ngOnInit() {
@@ -25,7 +29,7 @@ export class NamespaceComponent implements OnInit {
 
 
   fetchData() {
-    this.httpClient.get('http://10.1.1.4:8000/api/namespaces') // Replace with your API endpoint
+    this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespaces`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.namespaceData = response; // Assuming the API returns an array of objects
       });
@@ -33,14 +37,14 @@ export class NamespaceComponent implements OnInit {
     }
 
     getWAFByNamespace() {
-      this.httpClient.get('http://10.1.1.4:8000/api/namespace_waf_policies/'+this.namespace) // Replace with your API endpoint
+      this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespace_waf_policies/${this.namespace}`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.wafData = response; // Assuming the API returns an array of objects
       });
     }
 
     getLoadbalancers() {
-      this.httpClient.get('http://10.1.1.4:8000/api/namespace_loadbalancers/'+this.namespace) // Replace with your API endpoint
+      this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespace_loadbalancers/${this.namespace}`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.lbData = response; // Assuming the API returns an array of objects
       });

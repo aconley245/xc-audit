@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LbAuditComponent } from '../lb-audit.component';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-namespace',
@@ -15,6 +16,8 @@ export class NamespaceComponent {
   namespaceData: any[] = [];
   namespace: string = '';
   lbData: any[] = [];
+  private backendServer = environment.backendServer;
+  private backendServerPort = environment.backendServerPort;
 
 
  
@@ -26,7 +29,7 @@ export class NamespaceComponent {
 
 
   fetchData() {
-    this.httpClient.get('http://10.1.1.4:8000/api/namespaces') // Replace with your API endpoint
+    this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespaces`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.namespaceData = response; // Assuming the API returns an array of objects
       });
@@ -34,7 +37,7 @@ export class NamespaceComponent {
     }
 
     getLoadbalancers() {
-      this.httpClient.get('http://10.1.1.4:8000/api/namespace_loadbalancers/'+this.namespace) // Replace with your API endpoint
+      this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespace_loadbalancers/${this.namespace}`) // Replace with your API endpoint
       .subscribe((response: any) => {
         this.lbData = response; // Assuming the API returns an array of objects
       });
