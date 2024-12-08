@@ -16,12 +16,13 @@
     </div>
 </div>
 
-<table class="table">
+<table class="table table-bordered mt-3">
     <thead>
         <tr>
             <th>Load Balancer</th>
             <th>WAF Policy</th>
-            <th>Policy Matches</th>
+            <th>Policy Matches Select WAF Policy</th>
+            <th>WAF Exclusions</th>
         </tr>
     </thead>
     <tbody>
@@ -31,13 +32,38 @@
                     <td>{{loadbalancer.name}}</td>
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Compliant</td>
-                </tr>
+                    <td>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th class="text-center">JSON Data</th>
+                            </tr>
+                        </thead>
+                        @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name;) {
+                            <tr>
+                                <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
+                            </tr>
+                        }
+                    </td>
             }
             @else {
                 <tr class="table-warning">
                     <td>{{loadbalancer.name}}</td>
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Not Compliant</td>
+                    <td>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th class="text-center">JSON Data</th>
+                            </tr>
+                        </thead>
+                        @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
+                            <tr>
+                                <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
+                            </tr>
+                        }
+                    </td>
                 </tr>
             }     
         }

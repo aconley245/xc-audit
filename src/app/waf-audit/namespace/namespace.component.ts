@@ -9,7 +9,7 @@ import { WafAuditComponent } from '../waf-audit.component';
   selector: 'app-namespace',
   imports: [FormsModule, CommonModule, WafAuditComponent],
   templateUrl: './namespace.component.html',
-  styleUrl: './namespace.component.css'
+  styleUrl: './namespace.component.css',
 })
 export class NamespaceComponent implements OnInit {
   namespaceData: any[] = [];
@@ -22,7 +22,7 @@ export class NamespaceComponent implements OnInit {
   private backendServerPort = environment.backendServerPort;
 
   httpClient = inject(HttpClient);
-
+ 
   ngOnInit() {
     this.fetchData();
   }
@@ -33,7 +33,7 @@ export class NamespaceComponent implements OnInit {
       .subscribe((response: any) => {
         this.namespaceData = response; // Assuming the API returns an array of objects
       });
-
+      
     }
 
     getWAFByNamespace() {
@@ -44,9 +44,10 @@ export class NamespaceComponent implements OnInit {
     }
 
     getLoadbalancers() {
+      console.log("Loading turned on from getLoadbalancers")
       this.httpClient.get(`http://${this.backendServer}:${this.backendServerPort}/api/namespace_loadbalancers/${this.namespace}`) // Replace with your API endpoint
-      .subscribe((response: any) => {
-        this.lbData = response; // Assuming the API returns an array of objects
-      });
+        .subscribe((response: any) => {
+          this.lbData = response; // Assuming the API returns an array of objects
+        });
     }
 }
