@@ -40,11 +40,11 @@
                                     <th class="text-center">JSON Data</th>
                                 </tr>
                             </thead>
-                        }
-                        @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name;) {
-                            <tr>
-                                <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
-                            </tr>
+                            @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name;) {
+                                <tr>
+                                    <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
+                                </tr>
+                            }
                         }
                     </td>
             }
@@ -61,11 +61,11 @@
                                     <th class="text-center">JSON Data</th>
                                 </tr>
                             </thead>
-                        }
-                        @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
-                            <tr>
-                                <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
-                            </tr>
+                            @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
+                                <tr>
+                                    <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
+                                </tr>
+                            }
                         }
                     </td>
                 </tr>
