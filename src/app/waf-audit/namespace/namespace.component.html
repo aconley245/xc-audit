@@ -33,12 +33,14 @@
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Compliant</td>
                     <td>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th class="text-center">JSON Data</th>
-                            </tr>
-                        </thead>
+                        @if (loadbalancer.waf_exclusions) {
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-center">JSON Data</th>
+                                </tr>
+                            </thead>
+                        }
                         @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name;) {
                             <tr>
                                 <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
@@ -52,12 +54,14 @@
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Not Compliant</td>
                     <td>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th class="text-center">JSON Data</th>
-                            </tr>
-                        </thead>
+                        @if (loadbalancer.waf_exclusions) {
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-center">JSON Data</th>
+                                </tr>
+                            </thead>
+                        }
                         @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
                             <tr>
                                 <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
