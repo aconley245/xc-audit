@@ -33,7 +33,7 @@
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Compliant</td>
                     <td>
-                        @if (loadbalancer.waf_exclusions.length === 0) {
+                        @if (loadbalancer.waf_exclusions?.length > 0) {
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -54,7 +54,7 @@
                     <td>{{loadbalancer.app_firewall.name}}</td>
                     <td>Not Compliant</td>
                     <td>
-                        @if (loadbalancer.waf_exclusions.length === 0) {
+                        @if (loadbalancer.waf_exclusions?.length > 0) {
                             <thead>
                                 <tr>
                                     <th>Name</th>
