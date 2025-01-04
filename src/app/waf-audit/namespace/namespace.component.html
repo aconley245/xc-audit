@@ -8,10 +8,10 @@
                 {{ item.name }}
             </option>
         </select>
-        <label for="selectWafPolicy">Select WAF Policy</label>
+        <label for="selectWafPolicy">Select WAF Policy to Audit Against</label>
       <select class="form-control" id="selectWafPolicy" (change)="getLoadbalancers()" [(ngModel)]="wafPolicy">
         <option value="">Select </option>
-        <option *ngFor="let item of wafData" [value]="item.name">{{item.name}}</option>
+        <option *ngFor="let item of wafData" [value]="item.name">{{item.name}} ({{item.namespace.name}})</option>
       </select>
     </div>
 </div>
@@ -21,7 +21,7 @@
         <tr>
             <th>Load Balancer</th>
             <th>WAF Policy</th>
-            <th>Policy Matches Select WAF Policy</th>
+            <th>Policy Matches Selected WAF Policy</th>
             <th>WAF Exclusions</th>
         </tr>
     </thead>
@@ -30,42 +30,42 @@
             @if (loadbalancer.app_firewall.name === wafPolicy) {
                 <tr class="table-success">
                     <td>{{loadbalancer.name}}</td>
-                    <td>{{loadbalancer.app_firewall.name}}</td>
+                    <td>{{loadbalancer.app_firewall.name}} ({{loadbalancer.app_firewall.namespace.name}})</td>
                     <td>Compliant</td>
-                    <td>
-                        @if (loadbalancer.waf_exclusions?.length > 0) {
-                            <thead>
+                    @if (loadbalancer.waf_exclusions?.length > 0) {
+                        <td>
+                            @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
                                 <tr>
-                                    <th>Name</th>
-                                    <th class="text-center">JSON Data</th>
-                                </tr>
-                            </thead>
-                            @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name;) {
-                                <tr>
-                                    <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
+                                    <td class="border border-secondary-subtle border-1">{{waf_exclusion.name}}</td><td class="border border-secondary-subtle border-1"><button type="button" class="btn btn-secondary" (click)="openModal(waf_exclusion.data)">View Details</button> </td>
                                 </tr>
                             }
-                        }
-                    </td>
-            }
-            @else {
+                        </td>
+                    } @else {
+                        <td>None</td>
+                    }
+            } @else if (loadbalancer.app_firewall.name == null) {
+                <tr class="table-danger">
+                    <td>{{loadbalancer.name}}</td>
+                    <td>None</td>
+                    <td>Not Compliant</td>
+                    <td>None</td>
+                </tr>
+            } @else {
                 <tr class="table-warning">
                     <td>{{loadbalancer.name}}</td>
-                    <td>{{loadbalancer.app_firewall.name}}</td>
+                    <td>{{loadbalancer.app_firewall.name}} ({{loadbalancer.app_firewall.namespace.name}})</td>
                     <td>Not Compliant</td>
                     <td>
                         @if (loadbalancer.waf_exclusions?.length > 0) {
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th class="text-center">JSON Data</th>
-                                </tr>
-                            </thead>
-                            @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
-                                <tr>
-                                    <td class="border border-dark border-2">{{waf_exclusion.name}}</td><td class="border border-dark border-2">{{waf_exclusion.data | json}}</td>
-                                </tr>
-                            }
+                            <td>
+                                @for (waf_exclusion of loadbalancer.waf_exclusions; track waf_exclusion.name) {
+                                    <tr>
+                                        <td class="border border-secondary-subtle border-1">{{waf_exclusion.name}}</td><td class="border border-secondary-subtle border-2"><button type="button" class="btn btn-secondary" (click)="openModal(waf_exclusion.data)">View Details</button> </td>
+                                    </tr>
+                                }
+                            </td>
+                        } @else {
+                            <td>None</td>
                         }
                     </td>
                 </tr>
@@ -73,3 +73,112 @@
         }
     </tbody>
 </table>
+
+<div class="modal" tabindex="-1" #modalWafExcl>
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">WAF Exclusion Details</h5>
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>{{wafExclData | json}}</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Domain</th>
+                        <th>Path</th>
+                        <th>Methods</th>
+                        <th>Signatures</th>
+                        <th>Violations</th>
+                        <th>Attack Types</th>
+                        <th>Bot Names</th>
+                        <th>Expiration</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>{{wafExclData?.metadata.name}}</td>
+                    @if (wafExclData?.any_domain) {
+                        <td>Any</td>
+                    } @else if (wafExclData?.exact_value) {
+                        <td>{{wafExclData?.exact_value}}</td>
+                    } @else if (wafExclData?.suffix_value) {
+                        <td>{{wafExclData?.suffix_value}}</td>
+                    }
+                    @if (wafExclData?.any_path) {
+                        <td>Any</td>
+                    } @else if (wafExclData?.path_prefix) {
+                        <td>{{wafExclData?.path_prefix}}</td>
+                    } @else if (wafExclData?.path_regex) {
+                        <td>{{wafExclData?.path_regex}}</td>
+                    }
+                    @if (wafExclData?.methods.length == 0) {
+                        <td>Any</td>
+                    } @else {
+                        <td><table class="table table-bordered">
+                            @for (method of wafExclData?.methods; track method) {
+                                <tr>
+                                    <td>{{method}}</td>
+                                </tr>
+                            }
+                        </table></td>
+                    }
+                    @if (wafExclData?.app_firewall_detection_control.exclude_signature_contexts.length == 0) {
+                        <td>None</td>
+                    } @else {
+                        <td><table class="table table-bordered">
+                            @for (signature of wafExclData?.app_firewall_detection_control.exclude_signature_contexts; track signature) {
+                                <tr>
+                                    <td>Signature ID: {{signature?.signature_id}} Context: {{signature?.context}} Context Name: {{signature?.context_name}}</td>
+                                </tr>
+                            }
+                        </table></td>
+                    }
+                    @if (wafExclData?.app_firewall_detection_control.exclude_violation_contexts.length == 0) {
+                        <td>None</td>
+                    } @else {
+                        <td><table class="table table-bordered">
+                            @for (violation of wafExclData?.app_firewall_detection_control.exclude_violation_contexts; track violation) {
+                                <tr>
+                                    <td>Context: {{violation.context}} Context Name: {{violation.context}} Exclude Violation: {{violation.exclude_violation}}</td>
+                                </tr>
+                            }
+                        </table></td>
+                    }
+                    @if (wafExclData?.app_firewall_detection_control.exclude_attack_type_contexts.length == 0) {
+                        <td>None</td>
+                    } @else {
+                        <td><table class="table table-bordered">
+                            @for (attack of wafExclData?.app_firewall_detection_control.exclude_attack_type_contexts; track attack) {
+                                <tr>
+                                    <td>Context: {{attack.context}} Context Name: {{attack.context_name}} Exclude Violation: {{attack.exclude_attack_type}}</td>
+                                </tr>
+                            }
+                        </table></td>
+                    }
+                    @if (wafExclData?.app_firewall_detection_control.exclude_bot_name_contexts.length == 0) {
+                        <td>None</td>
+                    } @else {
+                        <td><table class="table table-bordered">
+                            @for (bot of wafExclData?.app_firewall_detection_control.exclude_bot_name_contexts; track bot) {
+                                <tr>
+                                    <td>Bot Name: {{bot.bot_name}}</td>
+                                </tr>
+                            }
+                        </table></td>
+                    }
+                    @if (wafExclData?.expiration_timestamp) {
+                        <td>{{wafExclData?.expiration_timestamp}}</td>
+                    } @else {
+                        <td>None</td>
+                    }
+                </tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

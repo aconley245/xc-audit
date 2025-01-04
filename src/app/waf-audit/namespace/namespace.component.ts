@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { WafAuditComponent } from '../waf-audit.component';
 
@@ -16,13 +16,16 @@ export class NamespaceComponent implements OnInit {
   namespace: string = '';
   wafData: any[] = [];
   wafPolicy: string = '';
-  lbData: any[] =[];
+  lbData: any[] = [];
+  wafExclData: any
  
   private backendServer = environment.backendServer;
   private backendServerPort = environment.backendServerPort;
 
   httpClient = inject(HttpClient);
- 
+
+  @ViewChild('modalWafExcl') modalWafPopup!: ElementRef;
+
   ngOnInit() {
     this.fetchData();
   }
@@ -49,5 +52,14 @@ export class NamespaceComponent implements OnInit {
         .subscribe((response: any) => {
           this.lbData = response; // Assuming the API returns an array of objects
         });
+    }
+
+    openModal(exclData: {}) {
+      this.wafExclData = exclData;
+      this.modalWafPopup.nativeElement.style.display = 'block';
+    }
+    
+    closeModal() {
+      this.modalWafPopup.nativeElement.style.display = 'none';
     }
 }
